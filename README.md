@@ -21,7 +21,8 @@
 
 （也在考虑其他的订阅方式）
 
-![](https://i.loli.net/2018/06/16/5b23f3bbd9602.png)
+
+ <img src="https://i.loli.net/2018/06/16/5b23f3bbd9602.png" width = "200px" height = "200px" alt="测试公众号" />
 
 
 
