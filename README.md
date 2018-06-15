@@ -15,6 +15,16 @@
 
 
 
+## How to use
+
+订阅这个测试公众号就行啦~每天晚上8点会准时发送~
+
+（也在考虑其他的订阅方式）
+
+![](https://i.loli.net/2018/06/16/5b23f3bbd9602.png)
+
+
+
 ## TODO
 
 ✅ V2EX
@@ -32,9 +42,9 @@ Customization
 | Source | API                 | Description                   |
 | ---- | ------------------- | ---------------------- |
 | -    | /api                | 查看所有api列表        |
-| BBS | /api/bbs           | 查看所有bbs实习消息   |
-| BBS | /api/bbs/today     | 查看今天的bbs实习消息 |
-| BBS | /api/bbs/yesterday | 查看昨天的bbs实习消息 |
+| V2EX | /api/v2ex           | 查看所有v2ex实习消息   |
+| V2EX | /api/v2ex/today     | 查看今天的v2ex实习消息 |
+| V2EX | /api/v2ex/yesterday | 查看昨天的v2ex实习消息 |
 
 
 
