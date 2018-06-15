@@ -32,9 +32,9 @@ Customization
 | Source | API                 | Description                   |
 | ---- | ------------------- | ---------------------- |
 | -    | /api                | 查看所有api列表        |
-| V2EX | /api/v2ex           | 查看所有v2ex实习消息   |
-| V2EX | /api/v2ex/today     | 查看今天的v2ex实习消息 |
-| V2EX | /api/v2ex/yesterday | 查看昨天的v2ex实习消息 |
+| BBS | /api/bbs           | 查看所有bbs实习消息   |
+| BBS | /api/bbs/today     | 查看今天的bbs实习消息 |
+| BBS | /api/bbs/yesterday | 查看昨天的bbs实习消息 |
 
 
 

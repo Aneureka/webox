@@ -4,19 +4,10 @@
 """
 # -*- coding: utf-8 -*-
 
-import os
-import sys
-
-app_dir = os.path.dirname(os.path.abspath(__file__))
-base_dir = os.path.abspath(os.path.join(app_dir, "../../"))
-print(base_dir)
-sys.path.append(base_dir)
-
 import requests
 import json
 import time
 from flask import current_app
-from manage import app
 
 from app.utils.time_util import get_cur_timestamp
 from app.utils.redis_helper import get_redis
@@ -51,12 +42,8 @@ def _update_access_token():
                 print('获取Access token错误！')
         else:
             access_token = data['access_token']
-            expires_in = data['expires_in']
+            expires_in = int(data['expires_in']/2)
             expired_time = get_cur_timestamp() + expires_in
             _redis.set('access_token', access_token)
             _redis.set('expired_time', expired_time)
 
-
-if __name__ == '__main__':
-    with app.app_context():
-        print(get_access_token())

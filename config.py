@@ -4,6 +4,7 @@ import os
 from configparser import ConfigParser
 
 sensitive_config = ConfigParser()
+print(os.path.dirname(os.path.abspath(__file__))+ '/sensitiveconfig.ini')
 sensitive_config.read(os.path.dirname(os.path.abspath(__file__))+ '/sensitiveconfig.ini')
 
 
@@ -24,6 +25,8 @@ class Config:
     APPID = sensitive_config['wechat']['appid']
     APP_SECRET = sensitive_config['wechat']['appsecret']
     ACCESS_TOKEN_KEY = sensitive_config['wechat']['access_token_key']
+    BBS_MSG_TEMPLATE = 'VJjZl1Oxc6aQO-tL0YrlIRjbnenLGyuaFikBLw0Q1BA'
+
     TEXT_MSG_TEMPLATE = """ 
                             <xml>
                             <ToUserName><![CDATA[{ToUserName}]]></ToUserName>

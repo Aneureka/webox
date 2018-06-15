@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime, timedelta, date, time
-import json
-# from bson import json_util
 from . import db
 
 
@@ -27,7 +25,7 @@ class V2EXNews(db.Model):
         today = datetime.combine(date.today(), time.min)
         today_news_list = cls.query.filter(cls.fetch_time >= today).all()
         dict_news = {'news': [news.to_dict() for news in today_news_list]}
-        return json.dumps(dict_news, cls=DatetimeEncoder)
+        return dict_news
 
     @classmethod
     def get_ystd(cls):
@@ -36,16 +34,16 @@ class V2EXNews(db.Model):
         ystd_news_list = cls.query \
             .filter(cls.fetch_time >= yesterday) \
             .filter(cls.fetch_time < today) \
-            .order_by(cls.fetch_time.desc()) \
+            .order_by(cls.fetch_time) \
             .all()
         dict_news = {'news': [news.to_dict() for news in ystd_news_list]}
-        return json.dumps(dict_news, cls=DatetimeEncoder)
+        return dict_news
 
     @classmethod
     def get_all(cls):
         news_list = cls.query.all()
         dict_news = {'news': [news.to_dict() for news in news_list]}
-        return json.dumps(dict_news, cls=DatetimeEncoder)
+        return dict_news
 
     def to_dict(self):
         dict_news = {
@@ -56,11 +54,49 @@ class V2EXNews(db.Model):
         return dict_news
 
 
-class DatetimeEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, datetime):
-            return obj.strftime('%Y-%m-%d %H:%M:%S')
-        elif isinstance(obj, date):
-            return obj.strftime('%Y-%m-%d')
-        else:
-            return json.JSONEncoder.default(self, obj)
+class User(db.Model):
+    __tablename__ = 'user'
+    openid = db.Column(db.String(100), primary_key=True)
+    nickname = db.Column(db.String(50), default='')
+    sex = db.Column(db.Integer, default=0)
+    country = db.Column(db.String(50), default='')
+    province = db.Column(db.String(50), default='')
+    city = db.Column(db.String(50), default='')
+    headimgurl = db.Column(db.String(200), default='')
+    subscribe_time = db.Column(db.Integer, default=0)
+
+    def __init__(self, *args, **kwargs):
+        for dictionary in args:
+            for key in dictionary:
+                setattr(self, key, dictionary[key])
+        for key in kwargs:
+            setattr(self, key, kwargs[key])
+
+    @classmethod
+    def add_from_openid(cls, openid):
+        user = cls(openid=openid)
+        try:
+            db.session.add(user)
+            db.session.commit()
+        except:
+            db.session.rollback()
+
+    @classmethod
+    def add(cls, user):
+        try:
+            db.session.add(user)
+            db.session.commit()
+        except:
+            db.session.rollback()
+
+    @classmethod
+    def get_all_openid(cls):
+        user_list = cls.query.all()
+        openid_list = [user.openid for user in user_list]
+        return openid_list
+
+    @classmethod
+    def exists(cls, openid):
+        records = cls.query.filter(cls.openid == openid).all()
+        return True if records else False
+
