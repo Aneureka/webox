@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from datetime import datetime, timedelta, date
+from datetime import datetime, timedelta, date, time
 import json
 # from bson import json_util
 from . import db
@@ -11,7 +11,7 @@ class V2EXNews(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.String, nullable=False)
     title = db.Column(db.String, nullable=False)
-    fetch_time = db.Column(db.DateTime, default=datetime.utcnow)
+    fetch_time = db.Column(db.DateTime, default=datetime.now())
 
     @staticmethod
     def add(id, url, title):
@@ -24,14 +24,14 @@ class V2EXNews(db.Model):
 
     @staticmethod
     def get_today():
-        today = datetime.today()
+        today = datetime.combine(date.today(), time.min)
         today_news_list = V2EXNews.query.filter(V2EXNews.fetch_time >= today).all()
         dict_news = {'news': [news.to_dict() for news in today_news_list]}
         return json.dumps(dict_news, cls=DatetimeEncoder)
 
     @staticmethod
     def get_ystd():
-        today = datetime.today()
+        today = datetime.combine(date.today(), time.min)
         yesterday = today - timedelta(days=1)
         ystd_news_list = V2EXNews.query \
             .filter(V2EXNews.fetch_time >= yesterday) \
@@ -46,7 +46,6 @@ class V2EXNews(db.Model):
         news_list = V2EXNews.query.all()
         dict_news = {'news': [news.to_dict() for news in news_list]}
         return json.dumps(dict_news, cls=DatetimeEncoder)
-
 
     def to_dict(self):
         dict_news = {
