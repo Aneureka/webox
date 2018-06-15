@@ -13,37 +13,37 @@ class V2EXNews(db.Model):
     title = db.Column(db.String, nullable=False)
     fetch_time = db.Column(db.DateTime, default=datetime.now())
 
-    @staticmethod
-    def add(id, url, title):
-        news = V2EXNews(id=id, url=url, title=title)
+    @classmethod
+    def add(cls, id, url, title):
+        news = cls(id=id, url=url, title=title)
         try:
             db.session.add(news)
             db.session.commit()
         except:
             db.session.rollback()
 
-    @staticmethod
-    def get_today():
+    @classmethod
+    def get_today(cls):
         today = datetime.combine(date.today(), time.min)
-        today_news_list = V2EXNews.query.filter(V2EXNews.fetch_time >= today).all()
+        today_news_list = cls.query.filter(cls.fetch_time >= today).all()
         dict_news = {'news': [news.to_dict() for news in today_news_list]}
         return json.dumps(dict_news, cls=DatetimeEncoder)
 
-    @staticmethod
-    def get_ystd():
+    @classmethod
+    def get_ystd(cls):
         today = datetime.combine(date.today(), time.min)
         yesterday = today - timedelta(days=1)
-        ystd_news_list = V2EXNews.query \
-            .filter(V2EXNews.fetch_time >= yesterday) \
-            .filter(V2EXNews.fetch_time < today) \
-            .order_by(V2EXNews.fetch_time.desc()) \
+        ystd_news_list = cls.query \
+            .filter(cls.fetch_time >= yesterday) \
+            .filter(cls.fetch_time < today) \
+            .order_by(cls.fetch_time.desc()) \
             .all()
         dict_news = {'news': [news.to_dict() for news in ystd_news_list]}
         return json.dumps(dict_news, cls=DatetimeEncoder)
 
-    @staticmethod
-    def get_all():
-        news_list = V2EXNews.query.all()
+    @classmethod
+    def get_all(cls):
+        news_list = cls.query.all()
         dict_news = {'news': [news.to_dict() for news in news_list]}
         return json.dumps(dict_news, cls=DatetimeEncoder)
 
