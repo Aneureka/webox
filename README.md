@@ -1,6 +1,6 @@
 # internship_fetcher
 
-<code>internship_fetcher</code> 是一个可定制的实习消息订阅器的后端模块，主要负责消息获取和管理，未来会添加更多的订阅源。如果有推荐的消息源，请邮件联系我哦🤣
+<code>internship_fetcher</code> 是一个（可定制的）实习消息订阅器，主要负责消息获取和管理，未来会添加更多的订阅源。如果有推荐的消息源，欢迎邮件联系我哦🤣
 
 ```txt
  _         _                            _      _           __        _          _                 
@@ -19,9 +19,9 @@
 
 ✅ V2EX
 
-​      南大小百合
+​南大小百合
 
-​      Customization
+Customization
 
 
 
@@ -29,7 +29,7 @@
 
 ## API
 
-| 来源 | API                 | 说明                   |
+| Source | API                 | Description                   |
 | ---- | ------------------- | ---------------------- |
 | -    | /api                | 查看所有api列表        |
 | V2EX | /api/v2ex           | 查看所有v2ex实习消息   |
@@ -38,7 +38,7 @@
 
 
 
-##  环境配置
+## Environment
 
 - Centos 7
 - Python 3.6

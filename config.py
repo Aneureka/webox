@@ -19,6 +19,30 @@ class Config:
     # 各网站配置
     V2EX_KEYWORDS = ['校招', '秋招', '内推', '2018', '2019', '2020', '实习']
 
+    # 微信相关配置
+    TOKEN = sensitive_config['wechat']['token']
+    APPID = sensitive_config['wechat']['appid']
+    APP_SECRET = sensitive_config['wechat']['appsecret']
+    ACCESS_TOKEN_KEY = sensitive_config['wechat']['access_token_key']
+    TEXT_MSG_TEMPLATE = """ 
+                            <xml>
+                            <ToUserName><![CDATA[{ToUserName}]]></ToUserName>
+                            <FromUserName><![CDATA[{FromUserName}]]></FromUserName>
+                            <CreateTime>{CreateTime}</CreateTime>
+                            <MsgType><![CDATA[text]]></MsgType>
+                            <Content><![CDATA[{Content}]]></Content>
+                            </xml>
+                            """
+    IMAGE_MSG_TEMPLATE = """ 
+                             <xml>
+                             <ToUserName><![CDATA[{ToUserName}]]></ToUserName>
+                             <FromUserName><![CDATA[{FromUserName}]]></FromUserName>
+                             <CreateTime>{CreateTime}</CreateTime>
+                             <MsgType><![CDATA[text]]></MsgType>
+                             <Content><![CDATA[{Content}]]></Content>
+                             </xml>
+                             """
+
     @staticmethod
     def init_app(app):
         pass
