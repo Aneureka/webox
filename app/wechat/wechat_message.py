@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
-微信公众平台 —— 发送模板消息
-"""
 
+import os
 from flask import current_app
 from app.models import V2EXNews, User
 from wechatpy.client.api import WeChatMessage
@@ -20,7 +18,7 @@ def send_to_all():
 
 
 def send_for_test():
-    openid = current_app.config['TEST_OPENID']
+    openid = os.environ.get('TEST_OPENID')
     send_bbs_news_to(openid)
 
 
@@ -31,7 +29,7 @@ def send_bbs_news_to(touser):
 
 
 def _send_bbs_msg(touser, title, url, source='未知来源'):
-    template_id = current_app.config['BBS_MSG_TEMPLATE']
+    template_id = os.environ.get('BBS_MSG_TEMPLATE')
     data = {
         'source': {'value': source},
         'title': {"value": title, "color": "#173177"}

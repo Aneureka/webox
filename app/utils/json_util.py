@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-json 解析工具
-"""
+
 import json
 from datetime import datetime, date
 

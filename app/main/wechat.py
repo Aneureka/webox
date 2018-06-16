@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from . import main
-from flask import request, current_app
+import os
+from flask import request
 from wechatpy.utils import check_signature
 from wechatpy.exceptions import InvalidSignatureException
 from wechatpy import parse_message
@@ -19,7 +20,7 @@ def wechat_core():
         timestamp = data.get('timestamp')
         nonce = data.get('nonce')
         echostr = data.get('echostr')
-        token = current_app.config['TOKEN']
+        token = os.environ.get('TOKEN')
         logger = get_logger()
         try:
             check_signature(token, signature, timestamp, nonce)
@@ -30,7 +31,7 @@ def wechat_core():
             return 'Invalid request from wechat!'
     else:
         msg = parse_message(request.data)
-        reply = TextReply(content='暂时还没想好对话交互，之后可能会加入建议之类的功能，敬请期待~', message=msg)
+        reply = TextReply(content='暂时还没想好对话要做什么，之后可能会加入建议之类的功能，敬请期待QAQ', message=msg)
         return reply.render()
 
 
@@ -38,7 +39,7 @@ def wechat_core():
 def access_token():
     data = request.args.to_dict()
     key = data.get('key')
-    if not key or key != current_app.config['ACCESS_TOKEN_KEY']:
+    if not key or key != os.environ.get('ACCESS_TOKEN_KEY'):
         return 'You are not authorized to view the access token!'
     return wechat_client.access_token
 

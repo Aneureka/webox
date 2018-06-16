@@ -11,4 +11,13 @@ logs
 
 # database creation
 database.py
+
+# tasks configuration
 crontab.txt
+
+# virtual environment
+venv
+
+# script
+*.sh
+

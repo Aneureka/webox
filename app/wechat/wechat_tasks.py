@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from app.utils.path_util import base_dir
-sys.path.append(base_dir())
+import os
+app_dir = os.path.dirname(os.path.abspath(__file__))
+base_dir = os.path.abspath(os.path.join(app_dir, "../"))
+sys.path.append(base_dir)
 
 from app.utils.log_util import get_logger
-from app.utils.conf_util import get_value
 from wechatpy.exceptions import APILimitedException
 
 from manage import app
@@ -19,10 +20,10 @@ def run_tasks():
             update_users(get_user_openids())
         except APILimitedException:
             get_logger().warning('get followers api limited')
-        if get_value('app', 'mode') == 'test':
-            send_for_test()
-        else:
+        if os.environ.get('MODE') == 'all':
             send_to_all()
+        else:
+            send_for_test()
 
 
 if __name__ == '__main__':

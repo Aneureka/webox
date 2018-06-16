@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-微信公众平台 —— 用户管理
-"""
 
 import json
 from app.models import User

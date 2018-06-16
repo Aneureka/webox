@@ -1,13 +1,9 @@
 # -*- coding: utf-8 -*-
-"""
-微信公众平台 —— 管理微信公众平台SDK，自动更新access_token等
-"""
 
+import os
 from wechatpy.client import WeChatClient
 from wechatpy.session.redisstorage import RedisStorage
 from redis import Redis
-
-from app.utils.conf_util import get_value
 
 _redis_client = Redis.from_url('redis://127.0.0.1:6379/0')
 
@@ -17,8 +13,8 @@ _session_interface = RedisStorage(
 )
 
 wechat_client = WeChatClient(
-    appid=get_value('wechat', 'appid'),
-    secret=get_value('wechat', 'appsecret'),
+    appid=os.environ.get('APPID'),
+    secret=os.environ.get('APPSECRET'),
     session=_session_interface
 )
 

@@ -18,8 +18,6 @@ def setup_logging():
     logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d %I:%M:%S %p')
 
 
-
-
 manager.add_command("shell", Shell(make_context=make_shell_context))
 
 if __name__ == '__main__':
