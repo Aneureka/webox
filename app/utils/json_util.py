@@ -17,7 +17,7 @@ class DatetimeEncoder(json.JSONEncoder):
 
 
 def to_json(src, cls=DatetimeEncoder):
-    return json.dumps(src, cls=DatetimeEncoder)
+    return json.dumps(src, cls=cls)
 
 
 

@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-时间工具
-"""
 
 from datetime import datetime
 

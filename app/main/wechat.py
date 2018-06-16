@@ -2,29 +2,44 @@
 
 from . import main
 from flask import request, current_app
-from app.wechat.verify import verify
-from app.wechat.access_token_helper import get_access_token
+from wechatpy.utils import check_signature
+from wechatpy.exceptions import InvalidSignatureException
+from wechatpy import parse_message
+from wechatpy.replies import TextReply
+from app.utils.log_util import get_logger
+from app.wechat.wechat_sdk import wechat_client
 
 
 @main.route('/wechat', methods=['GET', 'POST'])
 def wechat_core():
-    """微信核心交互接口"""
     if request.method == 'GET':
-        # 验证token
+        """verifying"""
         data = request.args.to_dict()
-        return verify(data)
+        signature = data.get('signature')
+        timestamp = data.get('timestamp')
+        nonce = data.get('nonce')
+        echostr = data.get('echostr')
+        token = current_app.config['TOKEN']
+        logger = get_logger()
+        try:
+            check_signature(token, signature, timestamp, nonce)
+            logger.info('check signature successfully')
+            return token
+        except InvalidSignatureException:
+            logger.warning('invalid signature from wechat')
+            return 'Invalid request from wechat!'
     else:
-        # todo 处理信息
-        return '人家还不用实现这个啦..'
+        msg = parse_message(request.data)
+        reply = TextReply(content='暂时还没想好对话交互，之后可能会加入建议之类的功能，敬请期待~', message=msg)
+        return reply.render()
 
 
 @main.route('/wechat/access_token', methods=['GET'])
 def access_token():
-    """获取Access token"""
     data = request.args.to_dict()
     key = data.get('key')
     if not key or key != current_app.config['ACCESS_TOKEN_KEY']:
-        return '老哥，还想来偷看我的密钥，我已经记住你IP了。'
-    return get_access_token()
+        return 'You are not authorized to view the access token!'
+    return wechat_client.access_token
 
 

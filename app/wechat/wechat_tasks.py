@@ -1,21 +1,28 @@
 # -*- coding: utf-8 -*-
 
-import os
 import sys
+from app.utils.path_util import base_dir
+sys.path.append(base_dir())
 
-app_dir = os.path.dirname(os.path.abspath(__file__))
-base_dir = os.path.abspath(os.path.join(app_dir, "../../"))
-sys.path.append(base_dir)
+from app.utils.log_util import get_logger
+from app.utils.conf_util import get_value
+from wechatpy.exceptions import APILimitedException
 
 from manage import app
-from app.wechat.user_manager import get_user_openids, update_users
-from app.wechat.message_sender import send_to_all
+from app.wechat.wechat_user import get_user_openids, update_users
+from app.wechat.wechat_message import send_to_all, send_for_test
 
 
 def run_tasks():
     with app.app_context():
-        update_users(get_user_openids())
-        send_to_all()
+        try:
+            update_users(get_user_openids())
+        except APILimitedException:
+            get_logger().warning('get followers api limited')
+        if get_value('app', 'mode') == 'test':
+            send_for_test()
+        else:
+            send_to_all()
 
 
 if __name__ == '__main__':
