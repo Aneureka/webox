@@ -31,7 +31,7 @@ def wechat_core():
             return 'Invalid request from wechat!'
     else:
         msg = parse_message(request.data)
-        reply = TextReply(content='暂时还没想好对话要做什么，之后可能会加入建议之类的功能，敬请期待QAQ', message=msg)
+        reply = TextReply(content='对话还没做嘤嘤嘤QAQ', message=msg)
         return reply.render()
 
 
