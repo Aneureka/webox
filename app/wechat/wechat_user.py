@@ -25,6 +25,7 @@ def get_user_openids(next_openid=None):
 
 def update_users(openids):
     for openid in openids:
+        # print(openid)
         if User.exists(openid):
             continue
         else:
@@ -36,7 +37,7 @@ def update_users(openids):
 
 
 def _get_user_info(openid):
-    user = json.loads(_wechat_user.get(openid))
+    user = _wechat_user.get(openid)
     logger = get_logger()
     if user:
         if user.__contains__('errcode'):
