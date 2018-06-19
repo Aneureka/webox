@@ -30,24 +30,24 @@ class InternshipNews(db.Model):
     def get_today(cls):
         today = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
         today_news = cls.query.filter(cls.fetch_time >= today).all()
-        return cls.to_text(today_news)
+        return today_news
 
     @classmethod
     def get_ystd(cls):
         today = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
         yesterday = today - datetime.timedelta(days=1)
         ystd_news = cls.query.filter(cls.fetch_time >= yesterday).filter(cls.fetch_time < today).all()
-        return cls.to_text(ystd_news)
+        return ystd_news
 
     @classmethod
     def get_latest(cls, n=7):
         latest_news = cls.query.order_by(cls.fetch_time.desc()).limit(n).all()
-        return cls.to_text(latest_news)
+        return latest_news
 
     @classmethod
     def get_all(cls):
         all_news = cls.query.all()
-        return cls.to_text(all_news)
+        return all_news
 
     @classmethod
     def to_text(cls, news_list):
