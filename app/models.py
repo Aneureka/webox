@@ -53,11 +53,11 @@ class InternshipNews(db.Model):
     def to_text(cls, news_list):
         if not news_list:
             return '暂时还没有消息呢，等会儿吧~'
-        text = '--------------------------\n' . join([news.to_text_single() for news in news_list])
+        text = '--------------------------\n'.join([news.to_text_single() for news in news_list])
         return text
 
     def to_text_single(self):
-        text = """【{source}】{title}\n{url}\n""" . format(source=self.source, title=self.title, url=self.url)
+        text = """【{source}】{title}\n{url}\n""".format(source=self.source, title=self.title, url=self.url)
         return text
 
     def to_dict(self):
@@ -73,50 +73,63 @@ class InternshipNews(db.Model):
         return dict_data
 
 
-
-class User(db.Model):
-    __tablename__ = 'user'
-    openid = db.Column(db.String(100), primary_key=True)
-    nickname = db.Column(db.String(50), default='')
-    sex = db.Column(db.Integer, default=0)
-    country = db.Column(db.String(50), default='')
-    province = db.Column(db.String(50), default='')
-    city = db.Column(db.String(50), default='')
-    headimgurl = db.Column(db.String(200), default='')
-    subscribe_time = db.Column(db.Integer, default=0)
-
-    def __init__(self, *args, **kwargs):
-        for dictionary in args:
-            for key in dictionary:
-                setattr(self, key, dictionary[key])
-        for key in kwargs:
-            setattr(self, key, kwargs[key])
+class Feedback(db.Model):
+    __tablename__ = 'feedback'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    source = db.Column(db.String(128), nullable=False)
+    content = db.Column(db.String(512), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.datetime.now())
 
     @classmethod
-    def add_from_openid(cls, openid):
-        user = cls(openid=openid)
+    def add(cls, feedback):
         try:
-            db.session.add(user)
+            db.session.add(feedback)
             db.session.commit()
         except:
             db.session.rollback()
 
-    @classmethod
-    def add(cls, user):
-        try:
-            db.session.add(user)
-            db.session.commit()
-        except:
-            db.session.rollback()
-
-    @classmethod
-    def get_all_openid(cls):
-        user_list = cls.query.all()
-        openid_list = [user.openid for user in user_list]
-        return openid_list
-
-    @classmethod
-    def exists(cls, openid):
-        records = cls.query.filter(cls.openid == openid).all()
-        return True if records else False
-
+# class User(db.Model):
+#     __tablename__ = 'user'
+#     openid = db.Column(db.String(100), primary_key=True)
+#     nickname = db.Column(db.String(50), default='')
+#     sex = db.Column(db.Integer, default=0)
+#     country = db.Column(db.String(50), default='')
+#     province = db.Column(db.String(50), default='')
+#     city = db.Column(db.String(50), default='')
+#     headimgurl = db.Column(db.String(200), default='')
+#     subscribe_time = db.Column(db.Integer, default=0)
+#
+#     def __init__(self, *args, **kwargs):
+#         for dictionary in args:
+#             for key in dictionary:
+#                 setattr(self, key, dictionary[key])
+#         for key in kwargs:
+#             setattr(self, key, kwargs[key])
+#
+#     @classmethod
+#     def add_from_openid(cls, openid):
+#         user = cls(openid=openid)
+#         try:
+#             db.session.add(user)
+#             db.session.commit()
+#         except:
+#             db.session.rollback()
+#
+#     @classmethod
+#     def add(cls, user):
+#         try:
+#             db.session.add(user)
+#             db.session.commit()
+#         except:
+#             db.session.rollback()
+#
+#     @classmethod
+#     def get_all_openid(cls):
+#         user_list = cls.query.all()
+#         openid_list = [user.openid for user in user_list]
+#         return openid_list
+#
+#     @classmethod
+#     def exists(cls, openid):
+#         records = cls.query.filter(cls.openid == openid).all()
+#         return True if records else False
