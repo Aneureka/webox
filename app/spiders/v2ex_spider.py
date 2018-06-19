@@ -3,7 +3,7 @@
 import re
 import requests
 from bs4 import BeautifulSoup
-from app.models import V2EXNews
+from app.models import InternshipNews
 
 KEYWORDS = ['校招', '秋招', '内推', '2018', '2019', '2020', '实习']
 
@@ -25,4 +25,5 @@ def fetch_v2ex():
         pat = re.findall(keywords_pattern, title)
         if not pat:
             continue
-        V2EXNews.add(id, url, title)
+        InternshipNews.add(InternshipNews(source='v2ex', origin_id=id, title=title, url=url))
+

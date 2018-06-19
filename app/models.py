@@ -1,19 +1,25 @@
 # -*- coding: utf-8 -*-
 
-from datetime import datetime, timedelta, date, time
+from flask import jsonify
+import datetime
 from . import db
 
 
-class V2EXNews(db.Model):
-    __tablename__ = 'v2ex_news'
-    id = db.Column(db.Integer, primary_key=True)
-    url = db.Column(db.String, nullable=False)
-    title = db.Column(db.String, nullable=False)
-    fetch_time = db.Column(db.DateTime, default=datetime.now())
+class InternshipNews(db.Model):
+    __tablename__ = 'internship_news'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    source = db.Column(db.String(256), default='other')
+    origin_id = db.Column(db.String(128), default='')
+    title = db.Column(db.String(256), nullable=False)
+    url = db.Column(db.String(512), nullable=False)
+    fetch_time = db.Column(db.DateTime, default=datetime.datetime.now())
+    other_info = db.Column(db.String(256), default='')
 
     @classmethod
-    def add(cls, id, url, title):
-        news = cls(id=id, url=url, title=title)
+    def add(cls, news):
+        existed_news = cls.query.filter(cls.source == news.source).filter(cls.origin_id == news.origin_id).all()
+        if len(existed_news) > 0:
+            return
         try:
             db.session.add(news)
             db.session.commit()
@@ -22,36 +28,50 @@ class V2EXNews(db.Model):
 
     @classmethod
     def get_today(cls):
-        today = datetime.combine(date.today(), time.min)
-        today_news_list = cls.query.filter(cls.fetch_time >= today).all()
-        dict_news = {'news': [news.to_dict() for news in today_news_list]}
-        return dict_news
+        today = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
+        today_news = cls.query.filter(cls.fetch_time >= today).all()
+        return cls.to_text(today_news)
 
     @classmethod
     def get_ystd(cls):
-        today = datetime.combine(date.today(), time.min)
-        yesterday = today - timedelta(days=1)
-        ystd_news_list = cls.query \
-            .filter(cls.fetch_time >= yesterday) \
-            .filter(cls.fetch_time < today) \
-            .order_by(cls.fetch_time) \
-            .all()
-        dict_news = {'news': [news.to_dict() for news in ystd_news_list]}
-        return dict_news
+        today = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
+        yesterday = today - datetime.timedelta(days=1)
+        ystd_news = cls.query.filter(cls.fetch_time >= yesterday).filter(cls.fetch_time < today).all()
+        return cls.to_text(ystd_news)
+
+    @classmethod
+    def get_latest(cls, n=7):
+        latest_news = cls.query.order_by(cls.fetch_time.desc()).limit(n).all()
+        return cls.to_text(latest_news)
 
     @classmethod
     def get_all(cls):
-        news_list = cls.query.all()
-        dict_news = {'news': [news.to_dict() for news in news_list]}
-        return dict_news
+        all_news = cls.query.all()
+        return cls.to_text(all_news)
+
+    @classmethod
+    def to_text(cls, news_list):
+        if not news_list:
+            return '暂时还没有消息呢，等会儿吧~'
+        text = '--------------------------\n' . join([news.to_text_single() for news in news_list])
+        return text
+
+    def to_text_single(self):
+        text = """【{source}】{title}\n{url}\n""" . format(source=self.source, title=self.title, url=self.url)
+        return text
 
     def to_dict(self):
-        dict_news = {
+        dict_data = {
+            'id': self.id,
+            'source': self.source,
+            'origin_id': self.origin_id,
             'title': self.title,
             'url': self.url,
-            'fetch_time': self.fetch_time
+            'fetch_time': self.fetch_time,
+            'other_info': self.other_info
         }
-        return dict_news
+        return dict_data
+
 
 
 class User(db.Model):
