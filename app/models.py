@@ -10,10 +10,12 @@ class InternshipNews(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     source = db.Column(db.String(256), default='other')
     origin_id = db.Column(db.String(128), default='')
-    title = db.Column(db.String(256), nullable=False)
+    title = db.Column(db.String(256), default='')
     url = db.Column(db.String(512), nullable=False)
     fetch_time = db.Column(db.DateTime, default=datetime.datetime.now())
-    other_info = db.Column(db.String(256), default='')
+    publish_time = db.Column(db.DateTime, nullable=True)
+    company = db.Column(db.String(128), default='')
+    address = db.Column(db.String(128), default='')
 
     @classmethod
     def add(cls, news):
@@ -24,6 +26,7 @@ class InternshipNews(db.Model):
             db.session.add(news)
             db.session.commit()
         except:
+            print('failed...')
             db.session.rollback()
 
     @classmethod
@@ -45,6 +48,16 @@ class InternshipNews(db.Model):
         return latest_news
 
     @classmethod
+    def get_by_address(cls, address, n=7):
+        news = cls.query.filter(cls.address.like('%'+address+'%')).order_by(cls.publish_time.desc()).limit(n).all()
+        return news
+
+    @classmethod
+    def get_by_company(cls, company, n=7):
+        news = cls.query.filter(cls.company.like('%'+company+'%')).order_by(cls.publish_time.desc()).limit(n).all()
+        return news
+
+    @classmethod
     def get_all(cls):
         all_news = cls.query.all()
         return all_news
@@ -57,7 +70,11 @@ class InternshipNews(db.Model):
         return text
 
     def to_text_single(self):
-        text = """【{source}】{title}\n{url}\n""".format(source=self.source, title=self.title, url=self.url)
+        text = ''
+        if self.source == 'v2ex':
+            text = """【{source}】{title}\n{url}\n""".format(source=self.source, title=self.title, url=self.url)
+        elif self.source == '牛客网':
+            text = """【{source}】{title}\n※{address}※  {publish_time}\n{url}\n""".format(source=self.source, title=self.title, url=self.url, address=self.address, publish_time=self.publish_time.date())
         return text
 
     def to_dict(self):
@@ -88,48 +105,3 @@ class Feedback(db.Model):
         except:
             db.session.rollback()
 
-# class User(db.Model):
-#     __tablename__ = 'user'
-#     openid = db.Column(db.String(100), primary_key=True)
-#     nickname = db.Column(db.String(50), default='')
-#     sex = db.Column(db.Integer, default=0)
-#     country = db.Column(db.String(50), default='')
-#     province = db.Column(db.String(50), default='')
-#     city = db.Column(db.String(50), default='')
-#     headimgurl = db.Column(db.String(200), default='')
-#     subscribe_time = db.Column(db.Integer, default=0)
-#
-#     def __init__(self, *args, **kwargs):
-#         for dictionary in args:
-#             for key in dictionary:
-#                 setattr(self, key, dictionary[key])
-#         for key in kwargs:
-#             setattr(self, key, kwargs[key])
-#
-#     @classmethod
-#     def add_from_openid(cls, openid):
-#         user = cls(openid=openid)
-#         try:
-#             db.session.add(user)
-#             db.session.commit()
-#         except:
-#             db.session.rollback()
-#
-#     @classmethod
-#     def add(cls, user):
-#         try:
-#             db.session.add(user)
-#             db.session.commit()
-#         except:
-#             db.session.rollback()
-#
-#     @classmethod
-#     def get_all_openid(cls):
-#         user_list = cls.query.all()
-#         openid_list = [user.openid for user in user_list]
-#         return openid_list
-#
-#     @classmethod
-#     def exists(cls, openid):
-#         records = cls.query.filter(cls.openid == openid).all()
-#         return True if records else False

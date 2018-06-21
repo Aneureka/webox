@@ -7,10 +7,11 @@ from app.models import InternshipNews
 
 KEYWORDS = ['校招', '秋招', '内推', '2018', '2019', '2020', '实习']
 
+SRC_URL = 'https://www.v2ex.com/?tab=jobs'
+
 
 def fetch_v2ex():
-    src_url = 'https://www.v2ex.com/go/jobs'
-    resp = requests.get(src_url)
+    resp = requests.get(SRC_URL)
     soup = BeautifulSoup(resp.text, 'html.parser')
 
     items = soup.find_all('span', class_='item_title')
