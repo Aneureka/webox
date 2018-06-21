@@ -32,14 +32,14 @@ class InternshipNews(db.Model):
     @classmethod
     def get_today(cls):
         today = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
-        today_news = cls.query.filter(cls.fetch_time >= today).all()
+        today_news = cls.query.filter(cls.fetch_time >= today).limit(7).all()
         return today_news
 
     @classmethod
     def get_ystd(cls):
         today = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
         yesterday = today - datetime.timedelta(days=1)
-        ystd_news = cls.query.filter(cls.fetch_time >= yesterday).filter(cls.fetch_time < today).all()
+        ystd_news = cls.query.filter(cls.fetch_time >= yesterday).filter(cls.fetch_time < today).limit(7).all()
         return ystd_news
 
     @classmethod
@@ -48,13 +48,13 @@ class InternshipNews(db.Model):
         return latest_news
 
     @classmethod
-    def get_by_address(cls, address, n=7):
-        news = cls.query.filter(cls.address.like('%'+address+'%')).order_by(cls.publish_time.desc()).limit(n).all()
+    def get_by_address(cls, address):
+        news = cls.query.filter(cls.address.like('%'+address+'%')).order_by(cls.publish_time.desc()).limit(7).all()
         return news
 
     @classmethod
-    def get_by_company(cls, company, n=7):
-        news = cls.query.filter(cls.company.like('%'+company+'%')).order_by(cls.publish_time.desc()).limit(n).all()
+    def get_by_company(cls, company):
+        news = cls.query.filter(cls.company.like('%'+company+'%')).order_by(cls.publish_time.desc()).limit(7).all()
         return news
 
     @classmethod
@@ -85,7 +85,9 @@ class InternshipNews(db.Model):
             'title': self.title,
             'url': self.url,
             'fetch_time': self.fetch_time,
-            'other_info': self.other_info
+            'publish_time': self.publish_time,
+            'company': self.company,
+            'address': self.address
         }
         return dict_data
 
