@@ -48,6 +48,11 @@ class InternshipNews(db.Model):
         return latest_news
 
     @classmethod
+    def get_by_source(cls, source):
+        news = cls.query.filter(cls.source == source).order_by(cls.publish_time.desc()).limit(7).all()
+        return news
+
+    @classmethod
     def get_by_address(cls, address):
         news = cls.query.filter(cls.address.like('%'+address+'%')).order_by(cls.publish_time.desc()).limit(7).all()
         return news
@@ -75,6 +80,8 @@ class InternshipNews(db.Model):
             text = """【{source}】{title}\n{url}\n""".format(source=self.source, title=self.title, url=self.url)
         elif self.source == '牛客网':
             text = """【{source}】{title}\n※{address}※  {publish_time}\n{url}\n""".format(source=self.source, title=self.title, url=self.url, address=self.address, publish_time=self.publish_time.date())
+        elif self.source == '小百合':
+            text = """【{source}】{title}\n=== {publish_time} ===\n{url}\n""".format(source=self.source, title=self.title, url=self.url, publish_time=self.publish_time.date())
         return text
 
     def to_dict(self):

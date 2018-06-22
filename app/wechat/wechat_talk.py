@@ -29,6 +29,7 @@ MSG_PATTERNS = {
 INTERNSHIP_PATTERNS = {
     'today': '今天',
     'ystd': '昨天',
+    'source': '\*(\S+)\*',
     'company': '\+(\S+)\+',
     'address': '\-(\S+)\-',
     'default': '.*',
@@ -36,7 +37,7 @@ INTERNSHIP_PATTERNS = {
 
 MESSAGES = {
     'subscribe': '感谢小改改的关注[Hey]\n可以试试【实习】、【今天的实习】、【昨天实习】之类的命令，会做出更好用的功能的~',
-    'default': '/:shake现在支持的指令/:shake\n1. 实习\n2. 今天的实习\n3. 昨天的实习\n4. +公司名+实习\n5. -城市-实习\n如果想要吐槽或建议，只要在建议里面加个表情/::)就可以啦hhh\n',
+    'default': '/:shake现在支持的指令/:shake\n1. 实习\n2. 今天的实习\n3. 昨天的实习\n4. +公司名+实习\n5. -城市-实习\n6. *来源*实习\n如果想要吐槽或建议，只要在建议里面加个表情/::)就可以啦hhh\n',
     'no_internship': '哎呀，现在还没有想要的实习呢~',
     'feedback': '阿里嘎多[Hey]\n在下已经记住啦！'
 }
@@ -71,12 +72,13 @@ def dispose_text_message(msg):
             return InternshipNews.to_text(InternshipNews.get_ystd())
         elif _matches(content, INTERNSHIP_PATTERNS['company']):
             company = _get_keyword(content, INTERNSHIP_PATTERNS['company'])
-            print(company)
             return InternshipNews.to_text(InternshipNews.get_by_company(company))
         elif _matches(content, INTERNSHIP_PATTERNS['address']):
             address = _get_keyword(content, INTERNSHIP_PATTERNS['address'])
-            print(address)
             return InternshipNews.to_text(InternshipNews.get_by_company(address))
+        elif _matches(content, INTERNSHIP_PATTERNS['source']):
+            source = _get_keyword(content, INTERNSHIP_PATTERNS['source'])
+            return InternshipNews.to_text(InternshipNews.get_by_source(source))
         else:
             return InternshipNews.to_text(InternshipNews.get_latest())
 

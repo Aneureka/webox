@@ -4,7 +4,7 @@ import os
 from . import api
 from flask import request, jsonify
 from app.models import InternshipNews
-from app.tasks import fetch_news
+from app.tasks import *
 from app.utils.log_util import get_logger
 
 
@@ -40,7 +40,17 @@ def fetch():
     if not token or token != os.environ.get('WEBOX_AUTHORIZATION_KEY'):
         return 'You are not authorized to view the access token!'
     else:
-        fetch_news()
-        get_logger().info('fetch internship news')
-        return 'fetched successfully!'
+        source = data.get('source')
+        spider_tasks = {
+            'v2ex': run_spider_v2ex,
+            'nowcoder': run_spider_nowcoder,
+            'njubbs': run_spider_njubbs
+        }
 
+        if source:
+            spider_tasks[source]()
+            get_logger().info('fetch {source} internship news'.format(source=source))
+        else:
+            run_spider_news()
+            get_logger().info('fetch all internship news')
+        return 'fetched successfully!'

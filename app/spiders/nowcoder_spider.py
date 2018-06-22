@@ -19,21 +19,18 @@ DETAIL_URL_TEMPLATE = 'https://www.nowcoder.com/recommend-intern/{INTERN_COMPANY
 def fetch_nowcoder():
     for address in ADDRESSES:
         page = 1
-        while True:
-            list_url = LIST_URL_TEMPLATE.format(ADDRESS=address, PAGE=page)
-            json_data = requests.get(list_url).json()
-            if not json_data:
-                break
-            job_list = [] if not json_data.get('data') else json_data.get('data').get('jobList')
-            if not job_list:
-                break
-            for job in job_list:
-                try:
-                    store_job_news(job)
-                except:
-                    get_logger().warning('fetch job detail info failed at job ' + str(job.get('id')))
-                    continue
-            page += 1
+        list_url = LIST_URL_TEMPLATE.format(ADDRESS=address, PAGE=page)
+        json_data = requests.get(list_url).json()
+        if not json_data:
+            break
+        job_list = [] if not json_data.get('data') else json_data.get('data').get('jobList')
+        if not job_list:
+            break
+        for job in job_list:
+            try:
+                store_job_news(job)
+            except:
+                get_logger().warning('fetch job detail info failed at job ' + str(job.get('id')))
 
 
 def store_job_news(job):
