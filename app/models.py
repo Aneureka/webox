@@ -22,6 +22,7 @@ class InternshipNews(db.Model):
         existed_news = cls.query.filter(cls.source == news.source).filter(cls.origin_id == news.origin_id).all()
         if len(existed_news) > 0:
             return
+        news.fetch_time = datetime.datetime.now()
         try:
             db.session.add(news)
             db.session.commit()

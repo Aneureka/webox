@@ -38,7 +38,6 @@ def fetch_njubbs_computer():
             url = HOST_URL + item[2]
             publish_time = _retrieve_year(url)
             news = InternshipNews(origin_id=origin_id, title=title, url=url, publish_time=publish_time, source=SOURCE)
-            print(news.to_text_single())
             InternshipNews.add(news)
         except:
             continue

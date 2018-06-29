@@ -97,6 +97,7 @@ def _matches(text, pat):
     p = re.compile(pat)
     return len(p.findall(text)) > 0
 
+
 def _get_keyword(text, pat):
     p = re.compile(pat)
     return p.match(text).group(1)
